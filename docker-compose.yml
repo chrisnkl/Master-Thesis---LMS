@@ -1,0 +1,19 @@
+services:
+
+  lms-auth-db:
+    image: postgres:18
+    container_name: lms-auth-db
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+    volumes:
+      - "lms-auth-db-data:/var/lib/postgresql"
+
+    environment:
+      POSTGRES_DB: lms-auth-db
+      POSTGRES_USER: lms-auth-user
+      POSTGRES_PASSWORD: lms-auth-password
+
+volumes:
+  lms-auth-db-data:
