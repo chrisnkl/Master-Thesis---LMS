@@ -4,6 +4,7 @@ CREATE TABLE users(
     email VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NULL,
     enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    system BOOLEAN NOT NULL DEFAULT FALSE,
     account_non_expired BOOLEAN NOT NULL DEFAULT TRUE,
     account_non_locked BOOLEAN NOT NULL DEFAULT TRUE,
     credentials_non_expired BOOLEAN NOT NULL DEFAULT TRUE,
