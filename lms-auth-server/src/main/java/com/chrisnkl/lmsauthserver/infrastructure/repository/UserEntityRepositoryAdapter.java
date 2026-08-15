@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -18,6 +19,23 @@ public class UserEntityRepositoryAdapter implements UserRepository {
     @Override
     public Optional<User> findByUsername(String username) {
         return userEntityRepository.findByUsername(username)
+                .map(userMapper::toDomain);
+    }
+
+    @Override
+    public Optional<User> findByUserIdWithRolesAndPermissions(UUID userId) {
+        return userEntityRepository.findByUserIdWithRolesAndPermissions(userId)
+                .map(userMapper::toDomain);
+    }
+
+    @Override
+    public int updatePasswordHash(UUID id, String passwordHash) {
+        return userEntityRepository.updatePasswordHash(id, passwordHash);
+    }
+
+    @Override
+    public Optional<User> findByUsernameWithRolesAndPermissions(String username) {
+        return userEntityRepository.findByUsernameWithRolesAndPermissions(username)
                 .map(userMapper::toDomain);
     }
 

@@ -5,7 +5,6 @@ import com.chrisnkl.lmsauthserver.domain.model.User;
 import com.chrisnkl.lmsauthserver.domain.repository.SystemConfigurationRepository;
 import com.chrisnkl.lmsauthserver.domain.repository.UserRepository;
 import com.chrisnkl.lmsauthserver.domain.service.SystemStartupService;
-import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +20,9 @@ public class SystemStartupServiceImpl implements SystemStartupService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @PostConstruct
-    void startUp() {
-        this.initialize();
-    }
 
     @Override
+    @Transactional
     public void initialize() {
 
         SystemConfiguration defaultConfiguration = systemConfigurationRepository.findDefaultSystemConfiguration()
@@ -41,7 +37,7 @@ public class SystemStartupServiceImpl implements SystemStartupService {
 
         log.warn("Attention! System setup is required before proceeding!");
 
-        User admin = userRepository.findByUsername("admin").orElseThrow(() -> new IllegalStateException("Default admin user not found"));
+        User admin = userRepository.findByUsernameWithRolesAndPermissions("admin").orElseThrow(() -> new IllegalStateException("Default admin user not found"));
         log.warn("Default admin user was successfully retrieved.");
 
         String bootstrapToken = System.getenv("SETUP_BOOTSTRAP_TOKEN");
@@ -51,7 +47,7 @@ public class SystemStartupServiceImpl implements SystemStartupService {
 
         admin.setPasswordHash(passwordEncoder.encode(bootstrapToken));
         log.warn("Registering admin user with default credentials...");
-        userRepository.save(admin);
+        userRepository.updatePasswordHash(admin.getId(), admin.getPasswordHash());
 
         log.warn("System Setup is required. Please login with the default admin credentials and complete the setup process.");
     }
