@@ -8,5 +8,6 @@ import java.util.UUID;
 public interface SystemConfigurationRepository {
 
     Optional<SystemConfiguration> findSystemConfiguration(UUID id);
-
+    Optional<SystemConfiguration> findDefaultSystemConfiguration();
+    SystemConfiguration save(SystemConfiguration systemConfiguration);
 }
