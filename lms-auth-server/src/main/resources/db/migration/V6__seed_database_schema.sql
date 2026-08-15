@@ -22,6 +22,7 @@ INSERT INTO users (
              true
          );
 
+-- Create system roles --
 INSERT INTO roles (
     id,
     name,
@@ -42,6 +43,29 @@ INSERT INTO roles (
              true
          );
 
+INSERT INTO roles (
+    id,
+    name,
+    system
+) VALUES (
+             '22222222-2222-2222-2222-222222222223',
+             'ASSISTANT_PROFESSOR',
+             true
+         );
+
+
+INSERT INTO roles (
+    id,
+    name,
+    system
+) VALUES (
+             '22222222-2222-2222-2222-222222222224',
+             'PROFESSOR',
+             true
+         );
+
+
+-- Create system permissions --
 INSERT INTO permissions (
     id,
     name,
@@ -86,7 +110,7 @@ INSERT INTO permissions (
       ('33333333-3333-3333-3333-55555555567', 'DELETE_OWN_COURSE_ASSISTANT', true),
       ('33333333-3333-3333-3333-55555555568', 'DELETE_OWN_COURSE_ASSISTANT_ASSIGNMENT', true),
       ('33333333-3333-3333-3333-55555555569', 'GRADE_OWN_COURSE_ASSIGNMENTS', true),
-      ('33333333-3333-3333-3333-55555555570', 'VIEW_OWN_COURSE_ASSIGNMENTS_GRADES', true);
+      ('33333333-3333-3333-3333-55555555570', 'VIEW_OWN_COURSE_ASSIGNMENTS_GRADES', true),
 
       -- Admin --
       ('33333333-3333-3333-3333-66666666661', 'MANAGE_COURSES', true),
@@ -100,7 +124,7 @@ INSERT INTO permissions (
       ('33333333-3333-3333-3333-66666666669', 'UNLOCK_AUTHENTICATION', true),
       ('33333333-3333-3333-3333-66666666670', 'RESTRICT_USER_ACCESS', true);
 
--- Assign ADMIN role to admin user
+-- Assign ADMIN role to admin user --
 INSERT INTO user_roles (
     user_id,
     role_id
@@ -109,11 +133,95 @@ INSERT INTO user_roles (
              '22222222-2222-2222-2222-222222222221'
          );
 
--- Assign all user permissions to ADMIN
-INSERT INTO role_permissions (
-    role_id,
-    permission_id
-)
+-- USER ROLE --
+-- USER permissions --
+INSERT INTO role_permissions (role_id, permission_id)
+SELECT
+    '22222222-2222-2222-2222-222222222222',
+    id
+FROM permissions
+WHERE name IN (
+               'PARTICIPATE_COURSE',
+               'VIEW_PARTICIPATED_COURSES',
+               'UPLOAD_PARTICIPATED_COURSE_ASSIGNMENT_SOLUTION',
+               'VIEW_OWN_PROFILE',
+               'EDIT_OWN_PROFILE',
+               'VIEW_CALENDAR',
+               'VIEW_OWN_STATISTICS',
+               'VIEW_OWN_GRADES'
+    );
+
+
+-- ASSISTANT PROFESSOR ROLE --
+-- USER + ASSISTANT PROFESSOR permissions --
+INSERT INTO role_permissions (role_id, permission_id)
+SELECT
+    '22222222-2222-2222-2222-222222222223',
+    id
+FROM permissions
+WHERE name IN (
+    -- USER PERMISSIONS --
+               'PARTICIPATE_COURSE',
+               'VIEW_PARTICIPATED_COURSES',
+               'UPLOAD_PARTICIPATED_COURSE_ASSIGNMENT_SOLUTION',
+               'VIEW_OWN_PROFILE',
+               'EDIT_OWN_PROFILE',
+               'VIEW_CALENDAR',
+               'VIEW_OWN_STATISTICS',
+               'VIEW_OWN_GRADES',
+
+    -- ASSISTANT PROFESSOR PERMISSIONS --
+               'VIEW_ASSIGNED_COURSE',
+               'VIEW_ASSIGNED_COURSE_ASSIGNMENTS',
+               'GRADE_ASSIGNED_COURSE_ASSIGNMENTS',
+               'VIEW_ASSIGNED_COURSE_ASSIGNMENTS_GRADES'
+    );
+
+
+-- PROFESSOR ROLE --
+-- USER + PROFESSOR permissions --
+INSERT INTO role_permissions (role_id, permission_id)
+SELECT
+    '22222222-2222-2222-2222-222222222224',
+    id
+FROM permissions
+WHERE name IN (
+    -- USER PERMISSIONS --
+               'PARTICIPATE_COURSE',
+               'VIEW_PARTICIPATED_COURSES',
+               'UPLOAD_PARTICIPATED_COURSE_ASSIGNMENT_SOLUTION',
+               'VIEW_OWN_PROFILE',
+               'EDIT_OWN_PROFILE',
+               'VIEW_CALENDAR',
+               'VIEW_OWN_STATISTICS',
+               'VIEW_OWN_GRADES',
+
+-- PROFESSOR PERMISSIONS --
+               'CREATE_OWN_COURSE',
+               'DELETE_OWN_COURSE',
+               'INVITE_USER_TO_OWN_COURSE',
+               'KICK_USER_FROM_OWN_COURSE',
+               'CREATE_OWN_COURSE_ANNOUNCEMENT',
+               'DELETE_OWN_COURSE_ANNOUNCEMENT',
+               'CREATE_OWN_COURSE_WIKI',
+               'DELETE_OWN_COURSE_WIKI',
+               'UPLOAD_OWN_COURSE_ASSIGNMENT',
+               'DELETE_OWN_COURSE_ASSIGNMENT',
+               'VIEW_OWN_COURSE_ASSIGNMENTS',
+               'UPLOAD_OWN_COURSE_DOCUMENT',
+               'DELETE_OWN_COURSE_DOCUMENT',
+               'EXPORT_OWN_COURSE_ASSIGNMENT_ANALYTICS',
+               'ASSIGN_OWN_COURSE_ASSISTANT',
+               'ASSIGN_OWN_COURSE_ASSISTANT_ASSIGNMENT',
+               'DELETE_OWN_COURSE_ASSISTANT',
+               'DELETE_OWN_COURSE_ASSISTANT_ASSIGNMENT',
+               'GRADE_OWN_COURSE_ASSIGNMENTS',
+               'VIEW_OWN_COURSE_ASSIGNMENTS_GRADES'
+    );
+
+
+-- ADMIN ROLE - All permissions --
+INSERT INTO role_permissions (role_id, permission_id)
 SELECT
     '22222222-2222-2222-2222-222222222221',
     id
