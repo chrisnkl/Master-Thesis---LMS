@@ -2,6 +2,7 @@ package com.chrisnkl.lmsauthserver.domain.model;
 
 import lombok.*;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -17,4 +18,7 @@ public class Role {
 
     @Builder.Default
     private Set<Permission> permissions = new HashSet<>();
+
+    private Instant createdAt;
+    private Instant updatedAt;
 }

@@ -1,4 +1,4 @@
-package com.chrisnkl.lmsauthserver.service;
+package com.chrisnkl.lmsauthserver.infrastructure.service;
 
 import com.chrisnkl.lmsauthserver.infrastructure.persistence.RoleEntity;
 import com.chrisnkl.lmsauthserver.infrastructure.persistence.UserEntity;

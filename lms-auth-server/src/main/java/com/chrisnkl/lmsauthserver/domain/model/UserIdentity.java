@@ -3,6 +3,7 @@ package com.chrisnkl.lmsauthserver.domain.model;
 import com.chrisnkl.lmsauthserver.infrastructure.security.IdentityProvider;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @AllArgsConstructor @NoArgsConstructor
@@ -15,4 +16,6 @@ public class UserIdentity {
     private IdentityProvider provider;
     private String subject;
 
+    private Instant createdAt;
+    private Instant updatedAt;
 }
