@@ -10,13 +10,15 @@
     </parent>
     <groupId>com.chrisnkl</groupId>
     <artifactId>lms-auth-server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0</version>
     <name>lms-auth-server</name>
     <description>lms-auth-server</description>
 
     <properties>
         <java.version>25</java.version>
         <mapstruct.version>1.6.3</mapstruct.version>
+        <sonar.maven.plugin.version>5.8.0.7211</sonar.maven.plugin.version>
+        <sonar.host.url>http://localhost:9000</sonar.host.url>
     </properties>
     <dependencies>
         <dependency>
@@ -103,6 +105,11 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar.maven.plugin.version}</version>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

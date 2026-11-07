@@ -15,5 +15,12 @@ services:
       POSTGRES_USER: lms-auth-user
       POSTGRES_PASSWORD: lms-auth-password
 
+  sonarqube:
+    image: sonarqube:26.11.0.134175-community
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+
 volumes:
   lms-auth-db-data:
