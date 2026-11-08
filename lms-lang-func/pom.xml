@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.chrisnkl</groupId>
+        <artifactId>lms-parent-funcs</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>lms-lang-func</artifactId>
+    <version>0.0.1</version>
+    <packaging>jar</packaging>
+
+    <name>LMS-Language-Function</name>
+    <description>Provides language support to LMS</description>
+
+    <properties>
+        <functionAppName>lms-lang-func</functionAppName>
+        <functionResourceGroup>java-functions-group</functionResourceGroup>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.chrisnkl</groupId>
+            <artifactId>lms-libs-funcs</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>azure-functions-maven-plugin</artifactId>
+                <version>${azure.functions.maven.plugin.version}</version>
+                <configuration>
+                    <appName>${functionAppName}</appName>
+                    <resourceGroup>${functionResourceGroup}</resourceGroup>
+                    <appServicePlanName>java-functions-app-service-plan</appServicePlanName>
+                    <region>westeurope</region>
+                    <pricingTier>Flex Consumption</pricingTier>
+                    <runtime>
+                        <os>linux</os>
+                        <javaVersion>${java.version}</javaVersion>
+                    </runtime>
+                    <appSettings>
+                        <property>
+                            <name>FUNCTIONS_EXTENSION_VERSION</name>
+                            <value>~4</value>
+                        </property>
+                    </appSettings>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>package-functions</id>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

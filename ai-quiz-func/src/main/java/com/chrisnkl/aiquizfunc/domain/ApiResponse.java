@@ -1,0 +1,99 @@
+package com.chrisnkl.aiquizfunc.domain;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.functions.HttpRequestMessage;
+import com.microsoft.azure.functions.HttpResponseMessage;
+import com.microsoft.azure.functions.HttpStatus;
+
+import java.time.Instant;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record ApiResponse<T>(
+
+        HttpStatus status,
+        int statusCode,
+        String message,
+        T data,
+        Instant timestamp
+
+) {
+
+    public ApiResponse {
+        if (status == null) {
+            status = HttpStatus.OK;
+        }
+        if (statusCode == 0) {
+            statusCode = status.value();
+        }
+        if (timestamp == null) {
+            timestamp = Instant.now();
+        }
+    }
+
+    public ApiResponse(HttpStatus status, String message, T data) {
+        this(status, status != null ? status.value() : 200, message, data, Instant.now());
+    }
+
+    public ApiResponse(HttpStatus status, String message) {
+        this(status, message, null);
+    }
+
+    // --- Success Factory Methods ---
+
+    public static <T> ApiResponse<T> ok(T data) {
+        return new ApiResponse<>(HttpStatus.OK, "Success", data);
+    }
+
+    public static <T> ApiResponse<T> ok(String message, T data) {
+        return new ApiResponse<>(HttpStatus.OK, message, data);
+    }
+
+    public static <T> ApiResponse<T> created(String message, T data) {
+        return new ApiResponse<>(HttpStatus.CREATED, message, data);
+    }
+
+    // --- Error Factory Methods ---
+
+    public static <T> ApiResponse<T> badRequest(String message) {
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST, message, null);
+    }
+
+    public static <T> ApiResponse<T> notFound(String message) {
+        return new ApiResponse<>(HttpStatus.NOT_FOUND, message, null);
+    }
+
+    public static <T> ApiResponse<T> internalError(String message) {
+        return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, message, null);
+    }
+
+    public static <T> ApiResponse<T> error(HttpStatus status, String message) {
+        return new ApiResponse<>(status, message, null);
+    }
+
+    // --- Azure Functions HTTP Response Builders ---
+
+    public HttpResponseMessage toHttpResponse(HttpRequestMessage<?> request) {
+        return request.createResponseBuilder(this.status)
+                .header("Content-Type", "application/json")
+                .body(this)
+                .build();
+    }
+
+    public HttpResponseMessage toHttpResponse(HttpRequestMessage<?> request, ObjectMapper objectMapper) {
+        try {
+            return request.createResponseBuilder(this.status)
+                    .header("Content-Type", "application/json")
+                    .body(objectMapper.writeValueAsString(this))
+                    .build();
+        } catch (JsonProcessingException e) {
+            return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .header("Content-Type", "application/json")
+                    .body("{\"status\":\"INTERNAL_SERVER_ERROR\",\"statusCode\":500,\"message\":\"Failed to serialize response body\"}")
+                    .build();
+        }
+    }
+
+}
+
