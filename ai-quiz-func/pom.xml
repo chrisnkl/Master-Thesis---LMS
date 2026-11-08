@@ -6,6 +6,7 @@
         <groupId>com.chrisnkl</groupId>
         <artifactId>lms-parent-funcs</artifactId>
         <version>1.0.0</version>
+        <relativePath>../lms-parent-funcs/pom.xml</relativePath>
     </parent>
 
     <artifactId>aiquizfunc</artifactId>
@@ -21,6 +22,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.chrisnkl</groupId>
             <artifactId>lms-libs-funcs</artifactId>

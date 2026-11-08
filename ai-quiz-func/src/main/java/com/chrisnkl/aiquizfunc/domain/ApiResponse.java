@@ -1,15 +1,13 @@
 package com.chrisnkl.aiquizfunc.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
 import com.microsoft.azure.functions.HttpRequestMessage;
 import com.microsoft.azure.functions.HttpResponseMessage;
 import com.microsoft.azure.functions.HttpStatus;
 
 import java.time.Instant;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ApiResponse<T>(
 
         HttpStatus status,
@@ -87,7 +85,7 @@ public record ApiResponse<T>(
                     .header("Content-Type", "application/json")
                     .body(objectMapper.writeValueAsString(this))
                     .build();
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
                     .header("Content-Type", "application/json")
                     .body("{\"status\":\"INTERNAL_SERVER_ERROR\",\"statusCode\":500,\"message\":\"Failed to serialize response body\"}")
