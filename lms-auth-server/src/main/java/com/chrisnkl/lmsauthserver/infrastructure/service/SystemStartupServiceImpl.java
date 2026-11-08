@@ -8,6 +8,7 @@ import com.chrisnkl.lmsauthserver.domain.service.SystemStartupService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,8 @@ public class SystemStartupServiceImpl implements SystemStartupService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${setup.bootstrap.token}")
+    private String bootstrapToken;
 
     @Override
     @Transactional
@@ -40,7 +43,6 @@ public class SystemStartupServiceImpl implements SystemStartupService {
         User admin = userRepository.findByUsernameWithRolesAndPermissions("admin").orElseThrow(() -> new IllegalStateException("Default admin user not found"));
         log.warn("Default admin user was successfully retrieved.");
 
-        String bootstrapToken = System.getenv("SETUP_BOOTSTRAP_TOKEN");
         if (bootstrapToken == null || bootstrapToken.isBlank()) {
             throw new IllegalStateException("Environment variable SETUP_BOOTSTRAP_TOKEN is not set or is blank. Please set it to a secure value before starting the application.");
         }
