@@ -34,6 +34,7 @@ public class ProjectConfig implements WebMvcConfigurer {
 
     @Override
     public void configureApiVersioning(ApiVersionConfigurer configurer) {
-        configurer.setDefaultVersion("v1").usePathSegment(1);
+        configurer.setDefaultVersion("v1")
+                .usePathSegment(1, path -> path.pathWithinApplication().value().startsWith("/api/"));
     }
 }
