@@ -36,13 +36,13 @@
                 <version>${azure.functions.maven.plugin.version}</version>
                 <configuration>
                     <appName>${functionAppName}</appName>
-                    <resourceGroup>${functionResourceGroup}</resourceGroup>
+                    <resourceGroup>${defaultResourceGroup}</resourceGroup>
                     <appServicePlanName>java-functions-app-service-plan</appServicePlanName>
-                    <region>westeurope</region>
-                     <pricingTier>Flex Consumption</pricingTier>
+                    <region>${defaultRegion}</region>
+                     <pricingTier>${defaultPricingTier}</pricingTier>
                     <runtime>
-                        <os>linux</os>
-                        <javaVersion>25</javaVersion>
+                        <os>${defaultOS}</os>
+                        <javaVersion>${java.version}</javaVersion>
                     </runtime>
                     <appSettings>
                         <property>

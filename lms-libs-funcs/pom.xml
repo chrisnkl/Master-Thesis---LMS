@@ -8,6 +8,7 @@
         <groupId>com.chrisnkl</groupId>
         <artifactId>lms-parent-funcs</artifactId>
         <version>1.0.0</version>
+        <relativePath>../lms-parent-funcs/pom.xml</relativePath>
     </parent>
 
     <artifactId>lms-libs-funcs</artifactId>
@@ -15,6 +16,10 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.microsoft.azure.functions</groupId>
             <artifactId>azure-functions-java-library</artifactId>
