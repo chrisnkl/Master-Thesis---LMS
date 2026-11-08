@@ -1,4 +1,3 @@
-import AuthButton from "../AuthButton/AuthButton.tsx";
 import {Link} from "react-router-dom";
 
 export default function Header() {
@@ -10,7 +9,6 @@ export default function Header() {
         <Link to={"/instructors"}>Instructors</Link>
         <Link to={"/about"}>About</Link>
       </nav>
-      <AuthButton />
     </header>
   );
 }

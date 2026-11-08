@@ -1,6 +1,5 @@
 package com.chrisnkl.libs.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.microsoft.azure.functions.HttpRequestMessage;
 import com.microsoft.azure.functions.HttpResponseMessage;
 import com.microsoft.azure.functions.HttpStatus;
@@ -9,7 +8,6 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ApiResponse<T>(
         HttpStatus status,
         int statusCode,
