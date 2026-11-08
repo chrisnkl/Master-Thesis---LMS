@@ -3,13 +3,12 @@ package com.chrisnkl.aiquizfunc;
 import com.chrisnkl.aiquizfunc.dto.request.DocumentProcessRequest;
 import com.chrisnkl.aiquizfunc.exception.ProcessFailedException;
 import com.chrisnkl.aiquizfunc.service.DocumentProcessService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.functions.ExecutionContext;
 import com.microsoft.azure.functions.HttpRequestMessage;
 import com.microsoft.azure.functions.HttpResponseMessage;
-import com.microsoft.azure.functions.HttpStatus;
 import com.microsoft.azure.functions.annotation.FunctionName;
 import com.microsoft.azure.functions.annotation.HttpTrigger;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Optional;
 
@@ -37,11 +36,8 @@ public class DocumentProcessFunction {
         } catch (Exception e) {
 
         }
-
+        return null;
     }
 
-    public HttpResponseMessage createResponse(HttpRequestMessage<Optional<String>> request, HttpStatus status, String message, Object... data) {
-        return request.createResponseBuilder(status).body()
-    }
 
 }
