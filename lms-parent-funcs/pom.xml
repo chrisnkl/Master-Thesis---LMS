@@ -25,6 +25,8 @@
         <azure.sdk.bom>1.3.9</azure.sdk.bom>
         <jackson.version>3.2.4</jackson.version>
         <azure.functions.java.library.version>3.0.0</azure.functions.java.library.version>
+        <opentelemetry.version>1.68.0</opentelemetry.version>
+        <slf4j.api.version>2.0.20</slf4j.api.version>
         <junit.jupiter.version>6.1.3</junit.jupiter.version>
         <mockito.core.version>5.24.0</mockito.core.version>
         <lombok.version>1.18.48</lombok.version>
@@ -47,6 +49,17 @@
                 <groupId>com.microsoft.azure.functions</groupId>
                 <artifactId>azure-functions-java-library</artifactId>
                 <version>${azure.functions.java.library.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.opentelemetry</groupId>
+                <artifactId>opentelemetry-api</artifactId>
+                <version>${opentelemetry.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.api.version}</version>
+                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>tools.jackson.core</groupId>
