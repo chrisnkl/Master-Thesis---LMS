@@ -1,7 +1,8 @@
 package com.chrisnkl.langfunc;
 
-import com.chrisnkl.langfunc.factory.ServiceFactory;
-import com.chrisnkl.langfunc.handler.ILanguageHandler;
+import com.chrisnkl.langfunc.app.AppContainer;
+import com.chrisnkl.langfunc.handler.LanguageHandler;
+import com.chrisnkl.libs.exception.impl.DomainException;
 import com.chrisnkl.libs.helper.AbstractFunction;
 import com.chrisnkl.libs.domain.ApiResponse;
 import com.microsoft.azure.functions.ExecutionContext;
@@ -11,20 +12,14 @@ import com.microsoft.azure.functions.HttpResponseMessage;
 import com.microsoft.azure.functions.annotation.AuthorizationLevel;
 import com.microsoft.azure.functions.annotation.FunctionName;
 import com.microsoft.azure.functions.annotation.HttpTrigger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
+@Slf4j
 public class LanguageFunction extends AbstractFunction {
 
-    private final ILanguageHandler iLanguageHandler;
-
-    public LanguageFunction(ILanguageHandler iLanguageHandler) {
-        this.iLanguageHandler = iLanguageHandler;
-    }
-
-    public LanguageFunction() {
-        this.iLanguageHandler = ServiceFactory.getLanguageHandler();
-    }
+    private final LanguageHandler languageHandler = AppContainer.getLanguageHandler();
 
     @FunctionName("LanguageFunction")
     public HttpResponseMessage run(
@@ -36,11 +31,25 @@ public class LanguageFunction extends AbstractFunction {
             ) HttpRequestMessage<Optional<String>> request,
             final ExecutionContext context
     ) {
-        try {
-            return ApiResponse.ok("Language function operational", null).toHttpResponse(request);
-        } catch (Exception e) {
-            return ApiResponse.internalError(e.getMessage()).toHttpResponse(request);
-        }
+
+
+        executeWithTracing(request, () -> {
+            try {
+                log.info("LanguageFunction invoked");
+
+                String lang = request.getQueryParameters().get("lang");
+                if (lang == null || lang.isBlank()) throw new DomainException("Missing or blank 'lang' query parameter");
+                log.info("Processing request language: {}", lang);
+
+                languageHandler.handleLanguage(lang);
+                return ApiResponse.ok("Language function operational", null).toHttpResponse(request);
+            } catch (Exception e) {
+                return ApiResponse.internalError(e.getMessage()).toHttpResponse(request);
+            }
+        });
+
+
+
     }
 
 }
