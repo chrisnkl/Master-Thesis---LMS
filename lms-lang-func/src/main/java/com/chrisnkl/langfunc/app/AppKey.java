@@ -6,7 +6,10 @@ public enum AppKey {
 
     REDIS_HOST,
     REDIS_PORT,
-    REDIS_TTL;
+    REDIS_TTL,
+    REDIS_USER,
+    REDIS_PASSWORD,
+    REDIS_SSL;
 
     public String getValue() {
         return getEnvironmentVariable(this.name().toUpperCase());
