@@ -24,6 +24,7 @@ public class DefaultLanguageHandler implements LanguageHandler {
     private final RedisHelper redisHelper = AppContainer.getRedisHelper();
     private final String CACHE_KEY = "i18n:";
 
+    // TODO: Need to add ttl on memory cache
     private Map<String, String> loadFromCache(SupportedLanguage language) {
 
         final String key = CACHE_KEY + language.getLanguageCode().toLowerCase();
