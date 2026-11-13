@@ -7,13 +7,14 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
+import java.util.Map;
 
 public record ApiResponse<T>(
         HttpStatus status,
         int statusCode,
         String message,
-        T data,
-        String timestamp
+        String timestamp,
+        T data
 ) {
 
     public ApiResponse {
@@ -29,7 +30,7 @@ public record ApiResponse<T>(
     }
 
     public ApiResponse(HttpStatus status, String message, T data) {
-        this(status, status != null ? status.value() : 200, message, data, Instant.now().toString());
+        this(status, status != null ? status.value() : 200, message, Instant.now().toString(), data);
     }
 
     public ApiResponse(HttpStatus status, String message) {
@@ -71,12 +72,24 @@ public record ApiResponse<T>(
                 .build();
     }
 
+    public HttpResponseMessage toHttpResponse(HttpRequestMessage<?> request, Map<String, String> headers) {
+        var builder = request.createResponseBuilder(this.status).header("Content-Type", "application/json");
+
+        if (headers != null && !headers.isEmpty()) {
+            headers.forEach(builder::header);
+        }
+
+        return builder.body(this).build();
+    }
+
     public HttpResponseMessage toHttpResponse(HttpRequestMessage<?> request, ObjectMapper objectMapper) {
         try {
+
             return request.createResponseBuilder(this.status)
                     .header("Content-Type", "application/json")
                     .body(objectMapper.writeValueAsString(this))
                     .build();
+
         } catch (JacksonException e) {
             return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
                     .header("Content-Type", "application/json")
@@ -84,6 +97,26 @@ public record ApiResponse<T>(
                     .build();
         }
     }
+
+    public HttpResponseMessage toHttpResponse(HttpRequestMessage<?> request, Map<String, String> headers, ObjectMapper objectMapper) {
+        try {
+
+            var builder = request.createResponseBuilder(this.status).header("Content-Type", "application/json");
+
+            if (headers != null && !headers.isEmpty()) {
+                headers.forEach(builder::header);
+            }
+
+            return builder.body(objectMapper.writeValueAsString(this)).build();
+
+        } catch (JacksonException e) {
+            return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .header("Content-Type", "application/json")
+                    .body("{\"status\":\"INTERNAL_SERVER_ERROR\",\"statusCode\":500,\"message\":\"Failed to serialize response body\"}")
+                    .build();
+        }
+    }
+
 
 }
 

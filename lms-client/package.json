@@ -13,8 +13,11 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "4.3.5",
+    "i18next": "27.1.1",
+    "i18next-http-backend": "4.0.10",
     "react": "19.3.1",
     "react-dom": "19.3.1",
+    "react-i18next": "18.0.1",
     "react-router-dom": "7.18.5",
     "tailwindcss": "4.3.5"
   },

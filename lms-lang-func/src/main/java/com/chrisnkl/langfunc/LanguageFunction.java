@@ -47,7 +47,8 @@ public class LanguageFunction extends AbstractFunction {
                 Map<String, String> translations = languageHandler.getTranslations(SupportedLanguage.findByLanguageCode(language));
 
                 log.info("Successfully retrieved translations for language: {}", language);
-                return ApiResponse.ok("Translations have been successfully retrieved.", translations).toHttpResponse(request);
+                return ApiResponse.ok("Translations have been successfully retrieved.", translations)
+                        .toHttpResponse(request, Map.of("Cache-Control", "public, max-age=86400"));
 
             } catch (DomainException e) {
                 log.error("Domain error occurred while processing language request for language: {}", language, e);
