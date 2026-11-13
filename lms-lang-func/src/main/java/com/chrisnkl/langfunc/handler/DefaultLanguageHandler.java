@@ -7,21 +7,19 @@ import com.chrisnkl.langfunc.exception.LanguageMissingException;
 import com.chrisnkl.langfunc.exception.UnsupportedLanguageException;
 import com.chrisnkl.langfunc.helper.RedisHelper;
 import lombok.extern.slf4j.Slf4j;
-import redis.clients.jedis.RedisClient;
 import redis.clients.jedis.params.SetParams;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.InputStream;
-import java.util.EnumMap;
-import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class DefaultLanguageHandler implements LanguageHandler {
 
-    private static final Map<SupportedLanguage, Map<String, String>> MEMORY_CACHE = new EnumMap<>(SupportedLanguage.class);
+    private static final Map<SupportedLanguage, Map<String, String>> MEMORY_CACHE = new ConcurrentHashMap<>();
     private final ObjectMapper objectMapper = AppContainer.getObjectMapper();
     private final RedisHelper redisHelper = AppContainer.getRedisHelper();
     private final String CACHE_KEY = "i18n:";
