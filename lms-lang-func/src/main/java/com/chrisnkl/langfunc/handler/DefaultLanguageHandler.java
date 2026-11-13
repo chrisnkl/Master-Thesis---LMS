@@ -34,10 +34,9 @@ public class DefaultLanguageHandler implements LanguageHandler {
 
         try(InputStream inputStream = getClass().getResourceAsStream(resourcePath)) {
 
-            if (inputStream == null)
-                throw new LanguageMissingException("Translation file not found for language code: " + language.getLanguageCode());
-            return objectMapper.readValue(inputStream, new TypeReference<Map<String, String>>() {
-            });
+            if (inputStream == null) throw new LanguageMissingException("Translation file not found for language code: " + language.getLanguageCode());
+
+            return objectMapper.readValue(inputStream, new TypeReference<Map<String, String>>() {});
 
         } catch (JacksonException e) {
             log.error("Error parsing translation file for language code: {}", language.getLanguageCode(), e);
