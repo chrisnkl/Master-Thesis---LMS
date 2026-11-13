@@ -61,7 +61,7 @@ public class LanguageFunction extends AbstractFunction {
                 return ApiResponse.badRequest(e.getMessage()).toHttpResponse(request);
             } catch (Exception e) {
                 log.error("Error occurred while processing language request for language: {}", language, e);
-                return ApiResponse.internalError(e.getMessage()).toHttpResponse(request);
+                return ApiResponse.internalError("Internal server error").toHttpResponse(request);
             }
         });
     }
