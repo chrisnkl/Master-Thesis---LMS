@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 public enum SupportedLanguage {
 
     ENGLISH("en"),
-    GREEK("gr");
+    GREEK("el");
 
     private final String languageCode;
 

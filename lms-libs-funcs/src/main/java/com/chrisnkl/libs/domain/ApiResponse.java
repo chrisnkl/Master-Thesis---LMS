@@ -13,7 +13,7 @@ public record ApiResponse<T>(
         int statusCode,
         String message,
         T data,
-        Instant timestamp
+        String timestamp
 ) {
 
     public ApiResponse {
@@ -24,12 +24,12 @@ public record ApiResponse<T>(
             statusCode = status.value();
         }
         if (timestamp == null) {
-            timestamp = Instant.now();
+            timestamp = Instant.now().toString();
         }
     }
 
     public ApiResponse(HttpStatus status, String message, T data) {
-        this(status, status != null ? status.value() : 200, message, data, Instant.now());
+        this(status, status != null ? status.value() : 200, message, data, Instant.now().toString());
     }
 
     public ApiResponse(HttpStatus status, String message) {
