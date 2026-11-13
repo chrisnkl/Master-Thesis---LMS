@@ -32,8 +32,7 @@ public class LanguageFunction extends AbstractFunction {
                     methods = {HttpMethod.GET},
                     authLevel = AuthorizationLevel.ANONYMOUS,
                     route = "lang"
-            ) HttpRequestMessage<Optional<String>> request,
-            final ExecutionContext context
+            ) HttpRequestMessage<Optional<String>> request
     ) {
 
 
