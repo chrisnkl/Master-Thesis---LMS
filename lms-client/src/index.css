@@ -1,5 +1,51 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-fg: var(--primary-fg);
+
+  --color-background: var(--bg-app);
+  --color-surface: var(--bg-surface);
+  --color-foreground: var(--text-main);
+  --color-muted: var(--text-muted);
+  --color-border: var(--border-color);
+}
+
+:root {
+  --bg-app: var(--color-slate-50);
+  --bg-surface: var(--color-white);
+  --text-main: var(--color-slate-900);
+  --text-muted: var(--color-slate-500);
+  --border-color: var(--color-slate-200);
+}
+
+html.dark {
+  --bg-app: var(--color-slate-900);
+  --bg-surface: var(--color-slate-800);
+  --text-main: var(--color-slate-50);
+  --text-muted: var(--color-slate-400);
+  --border-color: var(--color-slate-700);
+}
+
+html[data-color="blue"] {
+  --primary: var(--color-blue-600);
+  --primary-hover: var(--color-blue-700);
+  --primary-fg: var(--color-white);
+}
+/* Red */
+html[data-color="red"] {
+  --primary: var(--color-red-600);
+  --primary-hover: var(--color-red-700);
+  --primary-fg: var(--color-white);
+}
+
+html[data-color="emerald"] {
+  --primary: var(--color-emerald-600);
+  --primary-hover: var(--color-emerald-700);
+  --primary-fg: var(--color-white);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -7,10 +53,11 @@
 
 
 html,
-body,
-#root {
+body {
   min-height: 100%;
   width: 100%;
+  background-color: var(--bg-app);
+  color: var(--text-main);
 }
 
 .loader {

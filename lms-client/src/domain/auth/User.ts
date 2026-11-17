@@ -5,10 +5,4 @@ export interface User {
     username: string;
     email: string;
     roles: Role[];
-    enabled: boolean;
-    accountNonExpired: boolean;
-    accountNonLocked: boolean;
-    credentialsNonExpired: boolean;
-    createdAt: string;
-    updatedAt: string;
 }
