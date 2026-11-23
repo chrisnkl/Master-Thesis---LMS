@@ -1,17 +1,19 @@
 
-const AUTH_BASE_URL = import.meta.env.VITE_AUTH_SERVER_URL || 'http://localhost:8081';
-const LANG_FUNC_BASE_URL = import.meta.env.VITE_LANGUAGE_ENDPOINT_URL || 'http://localhost:7071';
-
+// All requests go through the BFF API Gateway (same-origin via Vite proxy in dev, reverse proxy in prod)
 export const ServiceEndpoints = {
     AUTH: {
-        BASE: AUTH_BASE_URL,
-        LOGIN: `${AUTH_BASE_URL}/auth/login`,
-        USER_INFO: `${AUTH_BASE_URL}/api/v1/user/me`,
+        LOGIN: '/oauth2/authorization/keycloak',
+        LOGOUT: '/logout',
+        ME: '/bff/me',
+    },
+
+    USERS: {
+        ME: '/api/v1/users/me',
+        PREFERENCES: '/api/v1/users/me/preferences',
     },
 
     LANGUAGE: {
-        BASE: LANG_FUNC_BASE_URL,
-        I18N_LOAD_PATH: `${LANG_FUNC_BASE_URL}/api/lang?language={{lng}}`,
-        GET_TRANSLATIONS: (lang: string) => `${LANG_FUNC_BASE_URL}/api/lang?language=${lang}`,
-    }
+        I18N_LOAD_PATH: '/api/lang?language={{lng}}',
+        GET_TRANSLATIONS: (lang: string) => `/api/lang?language=${lang}`,
+    },
 } as const;

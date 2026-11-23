@@ -3,7 +3,7 @@ import ThemeSelector from "../ThemeSelector/ThemeSelector";
 import { useAuth } from "../../context/Auth/AuthContext";
 
 export default function Header() {
-    const { user, isAuthenticated, login, logout } = useAuth();
+    const { user, isAuthenticated, isLoading, login, logout } = useAuth();
 
     return (
         <header className="bg-surface border-b border-border px-6 py-4 flex justify-between items-center transition-colors">
@@ -14,13 +14,17 @@ export default function Header() {
             <nav className="flex gap-4 items-center">
                 <Link to="/courses" className="text-muted hover:text-foreground">Courses</Link>
                 <Link to="/instructors" className="text-muted hover:text-foreground">Instructors</Link>
+            </nav>
 
+            <div>
                 <ThemeSelector />
 
-                {/* Auth Button */}
-                {isAuthenticated ? (
+
+                {isLoading ? (
+                    <div className="h-8 w-20 rounded-lg bg-border/50 animate-pulse" />
+                ) : isAuthenticated ? (
                     <div className="flex items-center gap-3 pl-2">
-                        <span className="text-sm font-medium text-foreground">{user?.sub}</span>
+                        <span className="text-sm font-medium text-foreground">{user?.username}</span>
                         <button
                             onClick={logout}
                             className="text-xs px-2.5 py-1.5 rounded-lg border border-border hover:bg-background text-muted hover:text-foreground transition-colors cursor-pointer"
@@ -36,7 +40,7 @@ export default function Header() {
                         Sign in
                     </button>
                 )}
-            </nav>
+            </div>
         </header>
     );
 }

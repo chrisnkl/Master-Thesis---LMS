@@ -39,10 +39,12 @@ services:
     restart: unless-stopped
     volumes:
       - "keycloak_data:/opt/keycloak/data"
-    command: start-dev
+      - "./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro"
+    command: start-dev --import-realm
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      AZURE_ENTRA_CLIENT_SECRET: ${AZURE_ENTRA_CLIENT_SECRET:-}
 
 
 volumes:

@@ -3,7 +3,6 @@ package com.chrisnkl.lmsauthserver.config;
 import com.chrisnkl.lmsauthserver.infrastructure.handler.LocalLoginFailureHandler;
 import com.chrisnkl.lmsauthserver.infrastructure.handler.LocalLoginSuccessHandler;
 import com.chrisnkl.lmsauthserver.infrastructure.security.RequiredSetupAuthorizationManager;
-import com.chrisnkl.lmsauthserver.infrastructure.service.EntraOidcUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;

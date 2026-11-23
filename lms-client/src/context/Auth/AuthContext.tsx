@@ -1,67 +1,104 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import { loginWithRedirect } from "../../services/auth/authService";
+import { ServiceEndpoints } from "../../config/ServiceEndpoints";
+import { getCsrfToken } from "../../services/apiClient";
 
-export interface DecodedUser {
-    sub: string;           // Username or User ID
-    roles: string[];       // e.g. ["ROLE_USER", "ROLE_ADMIN"]
+export interface BffUser {
+    sub: string;
+    username: string;
     email?: string;
+    roles: string[];
+}
+
+interface BffMeResponse {
+    authenticated: boolean;
+    sub?: string;
+    username?: string;
+    email?: string;
+    roles?: string[];
 }
 
 interface AuthContextType {
-    user: DecodedUser | null;
-    token: string | null;
+    user: BffUser | null;
     isAuthenticated: boolean;
+    isLoading: boolean;
     login: () => void;
     logout: () => void;
-    setSession: (token: string) => void;
+    hasRole: (role: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper to decode JWT payload without external libraries
-function parseJwt(token: string): any {
-    try {
-        const base64Url = token.split(".")[1];
-        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-        return JSON.parse(window.atob(base64));
-    } catch {
-        return null;
-    }
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [token, setToken] = useState<string | null>(() => localStorage.getItem("lms_token"));
-    const [user, setUser] = useState<DecodedUser | null>(() => {
-        const saved = localStorage.getItem("lms_token");
-        if (!saved) return null;
-        const claims = parseJwt(saved);
-        return claims ? { sub: claims.sub, roles: claims.roles || [], email: claims.email } : null;
-    });
+    const [user, setUser] = useState<BffUser | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const setSession = (newToken: string) => {
-        localStorage.setItem("lms_token", newToken);
-        setToken(newToken);
-        const claims = parseJwt(newToken);
-        if (claims) {
-            setUser({ sub: claims.sub, roles: claims.roles || [], email: claims.email });
-        }
+    useEffect(() => {
+        let cancelled = false;
+
+        fetch(ServiceEndpoints.AUTH.ME, { credentials: "include" })
+            .then((res) => (res.ok ? res.json() : { authenticated: false }))
+            .then((data: BffMeResponse) => {
+                if (cancelled) return;
+                if (data.authenticated && data.sub) {
+                    setUser({
+                        sub: data.sub,
+                        username: data.username || data.email || data.sub,
+                        email: data.email,
+                        roles: data.roles || [],
+                    });
+                } else {
+                    setUser(null);
+                }
+            })
+            .catch(() => {
+                if (!cancelled) setUser(null);
+            })
+            .finally(() => {
+                if (!cancelled) setIsLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    const login = () => {
+        window.location.href = ServiceEndpoints.AUTH.LOGIN;
     };
 
+    // Real form POST so the browser smoothly follows the 302 OIDC logout redirect to Keycloak (no CORS error)
     const logout = () => {
-        localStorage.removeItem("lms_token");
-        setToken(null);
-        setUser(null);
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = ServiceEndpoints.AUTH.LOGOUT;
+
+        const csrfToken = getCsrfToken();
+        if (csrfToken) {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "_csrf";
+            input.value = csrfToken;
+            form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    };
+
+    const hasRole = (role: string) => {
+        const normalized = role.toUpperCase();
+        return user?.roles.some((r) => r.toUpperCase() === normalized || r.toUpperCase() === `ROLE_${normalized}`) ?? false;
     };
 
     return (
         <AuthContext.Provider
             value={{
                 user,
-                token,
-                isAuthenticated: !!token,
-                login: loginWithRedirect,
+                isAuthenticated: user !== null,
+                isLoading,
+                login,
                 logout,
-                setSession,
+                hasRole,
             }}
         >
             {children}

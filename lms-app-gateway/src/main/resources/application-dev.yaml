@@ -1,0 +1,86 @@
+spring:
+  application:
+    name: "LMS Application Gateway"
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2s
+  web:
+    error:
+      include-message: never
+      include-stacktrace: never
+
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_ISSUER_URI:}
+        registration:
+          keycloak:
+            client-id: ${KEYCLOAK_CLIENT_ID:}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET:}
+            authorization-grant-type: "authorization_code"
+            scope:
+              - openid
+              - profile
+              - email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+  cloud:
+    gateway:
+      server:
+        webflux:
+          default-filters:
+            - RemoveRequestHeader=Cookie
+          routes:
+
+            - id: lms-lang-func
+              uri: ${LMS_LANG_FUNC_ENDPOINT_URL:http://localhost:7071}
+              predicates:
+                - Path=/api/lang/**
+              filters:
+                - name: RequestRateLimiter
+                  args:
+                    redis-rate-limiter.replenishRate: 20
+                    redis-rate-limiter.burstCapacity: 40
+                    key-resolver: "#{@userKeyResolver}"
+
+            - id: lms-user-service
+              uri: ${LMS_USER_SERVICE_ENDPOINT_URL:http://localhost:8081}
+              predicates:
+                - Path=/api/users/**
+              filters:
+                - TokenRelay=
+                - name: CircuitBreaker
+                  args:
+                    name: userServiceCB
+                    fallbackUri: forward:/fallback/users
+
+app:
+  frontend-url: ${LMS_FRONTEND_ENDPOINT_URL:http://localhost:5173}
+
+server:
+  port: ${SERVER_PORT:8000}
+  shutdown: graceful
+  reactive:
+    session:
+      timeout: 30m
+      cookie:
+        name: LMS_SESSION
+        http-only: true
+        same-site: lax
+        secure: ${COOKIE_SECURE:false}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+  endpoint:
+    health:
+      probes:
+        enabled: true
