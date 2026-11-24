@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("{/api/secure/course}")
+@RequestMapping(value =  {"/api/secure/course"})
 @PreAuthorize("isAuthenticated()")
 public class CourseController {
 
