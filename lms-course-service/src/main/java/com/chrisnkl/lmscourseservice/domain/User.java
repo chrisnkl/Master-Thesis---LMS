@@ -1,6 +1,6 @@
 package com.chrisnkl.lmscourseservice.domain;
 
-import com.chrisnkl.lmscourseservice.domain.exception.InputValidationException;
+import com.chrisnkl.lmscourseservice.domain.exception.validation.InputValidationException;
 
 public record User(
         String id,

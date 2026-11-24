@@ -1,0 +1,11 @@
+package com.chrisnkl.lmscourseservice.domain.exception.course;
+
+import com.chrisnkl.lmscourseservice.domain.exception.BackendException;
+import lombok.Getter;
+
+@Getter
+public class CourseCreationException extends BackendException {
+    public CourseCreationException(String message) {
+        super(message);
+    }
+}
